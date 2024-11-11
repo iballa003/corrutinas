@@ -46,27 +46,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-// Simulated network call
+// Simula conexión a datos
 suspend fun fetchUserData(): String {
-    delay(3000) // Simulate network delay
+    delay(3000) // Simula un demora en red
     return "User data"
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var results by remember { mutableStateOf("Nada") }
-    LaunchedEffect(key1 = "Test") {
-        CoroutineScope(Main).launch {
+    var results by remember { mutableStateOf("") }
+    LaunchedEffect(key1 = "user") {//Para que se ejecute una vez
+        CoroutineScope(Main).launch {//Crea y administra la corruptina
             try {
-                val result = withContext(IO) { fetchUserData() }
-                println(result)
+                val result = withContext(IO) { fetchUserData() }//
                 results = result
             } catch (e: Exception) {
                 println("Error: ${e.message}")
             }
         }
     }
-    Column(verticalArrangement = Arrangement.Center) {
+    Column(verticalArrangement = Arrangement.Center) {//Para que los datos se muestren en el centro de pantalla.
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = results)
         }
