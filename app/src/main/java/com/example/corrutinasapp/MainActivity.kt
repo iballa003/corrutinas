@@ -21,7 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.corrutinasapp.ui.theme.CorrutinasAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -38,7 +41,6 @@ class MainActivity : ComponentActivity() {
             CorrutinasAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -46,20 +48,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-// Simula conexión a datos
-suspend fun fetchUserData(): String {
+// Simula una conexión a una API
+suspend fun fetchUserData(): Map<String, String> {
     delay(3000) // Simula un demora en red
-    return "User data"
+    var result = mapOf<String,String>("username" to "Iballa", "Password" to "1234")
+    return result
+    //return "User data"
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier) {
     var results by remember { mutableStateOf("") }
     LaunchedEffect(key1 = "user") {//Para que se ejecute una vez
         CoroutineScope(Main).launch {//Crea y administra la corruptina
             try {
                 val result = withContext(IO) { fetchUserData() }//
-                results = result
+                results = result.toString()
             } catch (e: Exception) {
                 println("Error: ${e.message}")
             }
@@ -67,7 +71,11 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     }
     Column(verticalArrangement = Arrangement.Center) {//Para que los datos se muestren en el centro de pantalla.
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = results)
+            Column {
+                Text(text = "Usuario y contraseña", fontWeight = FontWeight.Bold)
+                Text(text = results)
+            }
+
         }
     }
 
